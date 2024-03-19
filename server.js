@@ -18,7 +18,7 @@ wss.on("connection", function connection(ws) {
 
     // このサーバーに接続している自分以外のクライアントにメッセージを送信（ブロードキャスト）
     clients.forEach(function(client) {
-      if (client.readyState === WebSocket.OPEN) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(message);
       }
     });

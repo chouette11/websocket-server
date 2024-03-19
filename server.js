@@ -9,17 +9,18 @@ const clients = [];
 
 wss.on("connection", function connection(ws) {
   console.log("クライアントが接続しました");
-  
+
   // 新しく接続されたクライアントを配列に追加
   clients.push(ws);
 
   ws.on("message", function incoming(message) {
     console.log("受信メッセージ: %s", message);
 
-    // このサーバーに接続している自分以外のクライアントにメッセージを送信（ブロードキャスト）
+    // このサーバーに接続している全てのクライアントにメッセージを送信（ブロードキャスト）
     clients.forEach(function(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
+      // 接続がまだ開いているクライアントのみに送信
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(`${message}`);
       }
     });
   });
